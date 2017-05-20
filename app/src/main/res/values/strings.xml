@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Mhd-Widget-Android</string>
+    <string name="button_search">Hledat</string>
+    <string name="textview_zastavka">Zastávka</string>
+</resources>
