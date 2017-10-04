@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:layout_margin="8dp"
+    android:background="@drawable/widget_background"
+    android:weightSum="1">
+
+    <LinearLayout
+        android:id="@+id/widget_layout"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <TextView
+            android:id="@+id/widget_zbyva_casu"
+            android:text="@string/widget_zbyva_casu"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:gravity="center"
+            android:layout_marginTop="8dp"
+            android:textSize="24sp"
+            android:layout_weight="1" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:layout_marginBottom="8dp"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/widget_zastavka_jmeno"
+                android:text="@string/zastavka_label"
+                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:gravity="center"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/widget_predchozi"
+                android:text="@string/widget_predchozi"
+                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:gravity="end|center"
+                android:layout_marginEnd="4dp"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/widget_nasledujici"
+                android:text="@string/widget_nasledujici"
+                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:gravity="start|center"
+                android:layout_marginStart="4dp"
+                android:layout_weight="1" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/search_button"
+        android:layout_width="60dp"
+        android:layout_height="match_parent"
+        android:src="@mipmap/ic_search"
+        android:layout_margin="4dp" />
+
+</LinearLayout>

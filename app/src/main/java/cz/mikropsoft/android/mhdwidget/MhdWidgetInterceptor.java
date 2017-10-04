@@ -21,6 +21,7 @@ public class MhdWidgetInterceptor implements ClientHttpRequestInterceptor {
 
         HttpHeaders headers = request.getHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
+//        headers.setAccept(Collections.singletonList(new MediaType("application", "hal+json")));
         headers.set("Client-Local-Time", LocalTime.now().toString(ISODateTimeFormat.hourMinuteSecond()));
         return execution.execute(request, body);
     }

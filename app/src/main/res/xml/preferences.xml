@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <EditTextPreference
+        android:key="@string/preference_zastavka_id_key"
+        android:title="ID zastávky"
+        android:inputType="number"
+        android:summary="Preferovaná zastávka"
+        android:defaultValue="1"
+        android:dialogTitle="ID preferované zastávky" />
+
+    <!--<Preference-->
+        <!--android:key="pref_about"-->
+        <!--android:persistent="false"-->
+        <!--android:title="MHD Widget"-->
+        <!--android:summary="(Verze @string/app_namee)" />-->
+
+</PreferenceScreen>
