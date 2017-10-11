@@ -4,15 +4,15 @@
     <EditTextPreference
         android:key="@string/preference_zastavka_id_key"
         android:title="ID zastávky"
-        android:inputType="number"
+        android:inputType="text"
         android:summary="Preferovaná zastávka"
         android:defaultValue="1"
         android:dialogTitle="ID preferované zastávky" />
 
-    <!--<Preference-->
-        <!--android:key="pref_about"-->
-        <!--android:persistent="false"-->
-        <!--android:title="MHD Widget"-->
-        <!--android:summary="(Verze @string/app_namee)" />-->
+    <Preference
+        android:key="preference_about_key"
+        android:persistent="false"
+        android:title="MHD Widget"
+        android:summary="@string/preference_about_summary" />
 
 </PreferenceScreen>

@@ -13,4 +13,5 @@
     <string name="search_label">Jméno zastávky</string>
     <string name="dialog_title">Vybraná zastávka</string>
     <string name="empty_favorites">Žádné preferované zastávky&#8230;</string>
+    <string name="preference_about_summary">Verze %1$s</string>
 </resources>

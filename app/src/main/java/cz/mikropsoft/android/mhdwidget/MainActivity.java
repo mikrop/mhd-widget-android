@@ -78,7 +78,7 @@ public class MainActivity extends ListActivity
     @ItemClick
     void listItemClicked(Zastavka zastavka) {
         mhdPreferences.edit().zastavkaId()
-                .put(zastavka.getId())
+                .put("" + zastavka.getId())
                 .apply();
 
         String text = this.getResources().getText(R.string.dialog_title) + ": " + zastavka.getJmeno();

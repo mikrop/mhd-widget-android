@@ -89,7 +89,7 @@ public class MhdWidgetProvider extends AppWidgetProvider {
      * @param context aplikační kontext
      */
     public void updateAppWidget(Context context) {
-        int zastavkaId = mhdPreferences.zastavkaId().get();
+        int zastavkaId = Integer.parseInt(mhdPreferences.zastavkaId().get());
         AktualniSpoj aktualniSpoj = restClient.getAktualniSpoj(zastavkaId, LocalTime.now()).getBody();
 
         Resources resources = context.getResources();

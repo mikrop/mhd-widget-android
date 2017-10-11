@@ -13,11 +13,11 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
-//        debug{
-//            resValue "string", "app_name", "Debug MHDWidget"
-//        }
+        debug{
+//            resValue "string", "preference_about_summary", "Verze: 1.0.0-SNAPSHOT"
+        }
         release {
-//            resValue "string", "app_name", "App MHDWidget"
+//            resValue "string", "preference_about_summary", "Verze: 1.0.0-SNAPSHOT"
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
