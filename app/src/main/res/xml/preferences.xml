@@ -3,9 +3,9 @@
 
     <EditTextPreference
         android:key="@string/preference_zastavka_id_key"
-        android:title="ID zastávky"
+        android:title="Preferovaná zastávka"
         android:inputType="text"
-        android:summary="Preferovaná zastávka"
+        android:summary="ID zastávky"
         android:defaultValue="1"
         android:dialogTitle="ID preferované zastávky" />
 

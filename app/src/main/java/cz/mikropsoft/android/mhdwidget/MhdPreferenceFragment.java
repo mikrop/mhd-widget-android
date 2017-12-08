@@ -1,15 +1,11 @@
 package cz.mikropsoft.android.mhdwidget;
 
-import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
-import android.preference.PreferenceManager;
 
 import org.androidannotations.annotations.EFragment;
-import org.androidannotations.annotations.sharedpreferences.Pref;
 
 @EFragment
 public class MhdPreferenceFragment extends PreferenceFragment {

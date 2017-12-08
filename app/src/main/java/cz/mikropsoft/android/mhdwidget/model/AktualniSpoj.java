@@ -1,6 +1,7 @@
 package cz.mikropsoft.android.mhdwidget.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.datatype.joda.deser.LocalTimeDeserializer;
 
@@ -9,6 +10,7 @@ import org.joda.time.LocalTime;
 /**
  * Přepravka, aktuálního spoje.
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class AktualniSpoj {
 
     private String smer;

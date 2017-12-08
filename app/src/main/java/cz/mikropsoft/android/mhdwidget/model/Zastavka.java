@@ -1,8 +1,11 @@
 package cz.mikropsoft.android.mhdwidget.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 /**
  * Projekce zastávky.
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Zastavka {
 
     private int id;

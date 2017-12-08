@@ -1,6 +1,5 @@
 package cz.mikropsoft.android.mhdwidget;
 
-import org.androidannotations.annotations.sharedpreferences.DefaultInt;
 import org.androidannotations.annotations.sharedpreferences.DefaultString;
 import org.androidannotations.annotations.sharedpreferences.SharedPref;
 

@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.preference.PreferenceActivity;
 
 import org.androidannotations.annotations.EActivity;
-import org.androidannotations.annotations.sharedpreferences.Pref;
 
 @EActivity
 public class MainPreferenceActivity extends PreferenceActivity {
