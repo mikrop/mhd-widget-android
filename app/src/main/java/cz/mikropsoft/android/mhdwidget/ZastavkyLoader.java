@@ -5,10 +5,17 @@ import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
 
+import org.androidannotations.annotations.EBean;
+import org.androidannotations.rest.spring.annotations.RestService;
+
 import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.List;
 
+import cz.mikropsoft.android.mhdwidget.databases.MhdDatabase;
+import cz.mikropsoft.android.mhdwidget.databases.ZastavkaDao;
+import cz.mikropsoft.android.mhdwidget.interfaces.MhdRestClient;
+import cz.mikropsoft.android.mhdwidget.model.AktualniSpoj;
 import cz.mikropsoft.android.mhdwidget.model.Zastavka;
 
 /**
@@ -16,58 +23,36 @@ import cz.mikropsoft.android.mhdwidget.model.Zastavka;
  */
 public class ZastavkyLoader extends AsyncTaskLoader<List<Zastavka>> {
 
-//    @RestService
-//    MhdWidgetClient restClient;
-//    @Pref
-//    MainPreference_ mainPreference;
-
-    private List<Zastavka> mZastavky;
-    private String mQuery;
-//    private Integer zastavkaId;
-    private MhdWidgetClient restClient;
+    private List<Zastavka> zastavky;
+    private String query;
+    private MhdRestClient restClient;
 
     /**
      * @param context aplikační kontext
      * @param bundle řetězec, proti kterému se budou zastávky hledat
-     * @param restClient
      */
-    public ZastavkyLoader(Context context, Bundle bundle, MhdWidgetClient restClient) {
+    public ZastavkyLoader(Context context, Bundle bundle, MhdRestClient restClient) {
         super(context);
-        this.mQuery = bundle.getString("queryFiler");
-//        this.zastavkaId = bundle.getInt("zastavkaId");
+        this.query = bundle.getString("queryFiler");
         this.restClient = restClient;
     }
-
-//    public RestTemplate getRestTemplateWithHalMessageConverter() {
-//        RestTemplate restTemplate = new RestTemplate();
-//        List<HttpMessageConverter<?>> existingConverters = restTemplate.getMessageConverters();
-//        List<HttpMessageConverter<?>> newConverters = new ArrayList<>();
-//        newConverters.add(getHalMessageConverter());
-//        newConverters.addAll(existingConverters);
-//        restTemplate.setMessageConverters(newConverters);
-//        return restTemplate;
-//    }
-//
-//    private HttpMessageConverter getHalMessageConverter() {
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        objectMapper.registerModule(new Jackson2HalModule());
-//        MappingJackson2HttpMessageConverter halConverter = new TypeConstrainedMappingJackson2HttpMessageConverter(ResourceSupport.class);
-//        halConverter.setSupportedMediaTypes(Arrays.asList(HAL_JSON));
-//        halConverter.setObjectMapper(objectMapper);
-//        return halConverter;
-//    }
 
     @Override
     public List<Zastavka> loadInBackground() {
         List<Zastavka> result = new ArrayList<>();
 
-        List<Zastavka> zastavky = restClient.getZastavky().getBody();
+        ZastavkaDao zastavkaDao = MhdDatabase.getInstance(getContext()).zastavkaDao();
+        List<Zastavka> zastavky = zastavkaDao.getAll();
+        if (zastavky.isEmpty()) {
+            zastavky = restClient.getZastavky().getBody(); // TODO[HAJEK] rest metodu volat pouze pokud neni uloženo v db
+        }
+
         for (Zastavka zastavka : zastavky) {
             String normalize = Normalizer.normalize(zastavka.getJmeno(), Normalizer.Form.NFD)
                     .replaceAll("[^\\p{ASCII}]", "");
-            if (!TextUtils.isEmpty(mQuery) && normalize.toLowerCase().contains(mQuery)) {
+            if (!TextUtils.isEmpty(query) && normalize.toLowerCase().contains(query)) {
                 result.add(zastavka);
-            } else if (zastavka.isSelected()) {
+            } else if (zastavka.isFavorite()) {
                 result.add(zastavka);
             }
         }
@@ -80,8 +65,8 @@ public class ZastavkyLoader extends AsyncTaskLoader<List<Zastavka>> {
         if (isReset()) {
             onReleaseResources(zastavky);
         }
-        List<Zastavka> oldData = mZastavky;
-        mZastavky = zastavky;
+        List<Zastavka> oldData = this.zastavky;
+        this.zastavky = zastavky;
 
         if (isStarted()) {
             super.deliverResult(zastavky);
@@ -94,11 +79,11 @@ public class ZastavkyLoader extends AsyncTaskLoader<List<Zastavka>> {
 
     @Override
     protected void onStartLoading() {
-        if (mZastavky != null) {
-            deliverResult(mZastavky);
+        if (zastavky != null) {
+            deliverResult(zastavky);
         }
 
-        if (takeContentChanged() || mZastavky == null) {
+        if (takeContentChanged() || zastavky == null) {
             forceLoad();
         }
     }
@@ -122,9 +107,9 @@ public class ZastavkyLoader extends AsyncTaskLoader<List<Zastavka>> {
         onStopLoading();
 
         // At this point we can release the resources associated with 'apps' if needed.
-        if (mZastavky != null) {
-            onReleaseResources(mZastavky);
-            mZastavky = null;
+        if (zastavky != null) {
+            onReleaseResources(zastavky);
+            zastavky = null;
         }
     }
 

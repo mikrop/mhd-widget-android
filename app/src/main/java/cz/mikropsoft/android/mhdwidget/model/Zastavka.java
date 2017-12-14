@@ -1,17 +1,19 @@
 package cz.mikropsoft.android.mhdwidget.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
 
-/**
- * Projekce zastávky.
- */
-@JsonIgnoreProperties(ignoreUnknown = true)
+@Entity
 public class Zastavka {
 
+    @PrimaryKey(autoGenerate = true)
     private int id;
-    private String jmeno;
+
     private String smer;
-    private boolean selected;
+
+    private String jmeno;
+
+    private boolean favorite;
 
     public int getId() {
         return id;
@@ -19,14 +21,6 @@ public class Zastavka {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public String getJmeno() {
-        return jmeno;
-    }
-
-    public void setJmeno(String jmeno) {
-        this.jmeno = jmeno;
     }
 
     public String getSmer() {
@@ -37,22 +31,20 @@ public class Zastavka {
         this.smer = smer;
     }
 
-    /**
-     * Příznak preferované zastávky. Zastávky u které bylo kliknuto na "hvězdičku".
-     *
-     * @return {@code true} preferovan zastávka, jinak {@code false}
-     */
-    public boolean isSelected() {
-        return selected;
+    public String getJmeno() {
+        return jmeno;
     }
 
-    /**
-     * Nastaví tuto zastávku jako preferovanou.
-     *
-     * @param selected {@code true} pokud jde o preferovanou zastávka, jinak {@code false}
-     */
-    public void setSelected(boolean selected) {
-        this.selected = selected;
+    public void setJmeno(String jmeno) {
+        this.jmeno = jmeno;
+    }
+
+    public boolean isFavorite() {
+        return favorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        this.favorite = favorite;
     }
 
 }

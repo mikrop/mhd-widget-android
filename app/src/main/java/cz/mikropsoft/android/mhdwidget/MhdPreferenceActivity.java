@@ -6,7 +6,7 @@ import android.preference.PreferenceActivity;
 import org.androidannotations.annotations.EActivity;
 
 @EActivity
-public class MainPreferenceActivity extends PreferenceActivity {
+public class MhdPreferenceActivity extends PreferenceActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

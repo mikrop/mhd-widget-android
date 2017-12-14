@@ -3,11 +3,11 @@
 
     <EditTextPreference
         android:key="@string/preference_zastavka_id_key"
-        android:title="Preferovaná zastávka"
+        android:title="Zobrazovaná zastávka"
         android:inputType="text"
         android:summary="ID zastávky"
         android:defaultValue="1"
-        android:dialogTitle="ID preferované zastávky" />
+        android:dialogTitle="ID zobrazované zastávky" />
 
     <Preference
         android:key="preference_about_key"

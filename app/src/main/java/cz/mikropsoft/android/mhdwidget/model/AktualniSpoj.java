@@ -1,71 +1,58 @@
 package cz.mikropsoft.android.mhdwidget.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.datatype.joda.deser.LocalTimeDeserializer;
-
 import org.joda.time.LocalTime;
 
 /**
- * Přepravka, aktuálního spoje.
+ * Wrapper slučující informace ze zastávky a předaného spoje.
  */
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class AktualniSpoj {
 
-    private String smer;
-    private String zastavka;
+    private Zastavka zastavka;
+    private Spoj spoj;
 
-    @JsonDeserialize(using = LocalTimeDeserializer.class)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
-    private LocalTime predchozi;
-
-    @JsonDeserialize(using = LocalTimeDeserializer.class)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
-    private LocalTime odjezd;
-
-    @JsonDeserialize(using = LocalTimeDeserializer.class)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
-    private LocalTime nasledujici;
-
-    public String getSmer() {
-        return smer;
+    public AktualniSpoj(Zastavka zastavka, Spoj spoj) {
+        this.zastavka = zastavka;
+        this.spoj = spoj;
     }
 
-    public void setSmer(String smer) {
-        this.smer = smer;
+    public String getSmer() {
+        return zastavka.getSmer();
+    }
+
+    public void getSmer(String smer) {
+        zastavka.setSmer(smer);
     }
 
     public String getZastavka() {
-        return zastavka;
+        return zastavka.getJmeno();
     }
 
-    public void setZastavka(String zastavka) {
-        this.zastavka = zastavka;
+    public void setZastavka(String jmeno) {
+        zastavka.setJmeno(jmeno);
     }
 
     public LocalTime getPredchozi() {
-        return predchozi;
+        return spoj.getPredchozi();
     }
 
     public void setPredchozi(LocalTime predchozi) {
-        this.predchozi = predchozi;
+        spoj.setPredchozi(predchozi);
     }
 
     public LocalTime getOdjezd() {
-        return odjezd;
+        return spoj.getOdjezd();
     }
 
     public void setOdjezd(LocalTime odjezd) {
-        this.odjezd = odjezd;
+        spoj.setOdjezd(odjezd);
     }
 
     public LocalTime getNasledujici() {
-        return nasledujici;
+        return spoj.getNasledujici();
     }
 
     public void setNasledujici(LocalTime nasledujici) {
-        this.nasledujici = nasledujici;
+        spoj.setNasledujici(nasledujici);
     }
 
 }

@@ -5,7 +5,7 @@
     android:orientation="horizontal"
     android:padding="6dp">
 
-    <CheckBox android:id="@+id/favorite"
+    <CheckBox android:id="@+id/checkBoxFavorite"
         style="?android:attr/starStyle"
         android:focusable="false"
         android:layout_width="30dip"
@@ -24,7 +24,7 @@
         android:layout_height="wrap_content">
 
         <TextView
-            android:id="@+id/zastavka"
+            android:id="@+id/textViewJmeno"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/zastavka_label"
@@ -32,10 +32,10 @@
             android:paddingLeft="5dp" />
 
         <TextView
-            android:id="@+id/smer"
+            android:id="@+id/textViewSmer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/zastavka"
+            android:layout_below="@+id/textViewJmeno"
             android:text="@string/smer_label"
             android:textSize="12sp"
             android:paddingLeft="5dp" />

@@ -7,36 +7,38 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.widget.RemoteViews;
 
 import org.androidannotations.annotations.EReceiver;
 import org.androidannotations.annotations.sharedpreferences.Pref;
 import org.androidannotations.rest.spring.annotations.RestService;
-import org.joda.time.LocalTime;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import cz.mikropsoft.android.mhdwidget.databases.MhdDatabase;
+import cz.mikropsoft.android.mhdwidget.interfaces.MhdRestClient;
 import cz.mikropsoft.android.mhdwidget.model.AktualniSpoj;
 
 @EReceiver
 public class MhdWidgetProvider extends AppWidgetProvider {
 
     @RestService
-    MhdWidgetClient restClient;
+    MhdRestClient restClient;
     @Pref
-    MhdPreferences_ mhdPreferences;
+    MhdPreferences_ preferences;
 
-    private static final String LOG_TAG = "MhdWidgetProvider";
+    private static final String TAG = MhdWidgetProvider.class.getName();
     private static final Integer UPDATE_INTERVAL = 25; // Jak dlouho odpočet poběží
     public static final String ACTION_MHDWIDGET_UPDATE = "cz.mikropsoft.android.mhdwidget.action.MHDWIDGET_UPDATE"; // Musí se shodovat z action uvedenou v AndroidManifest.xml
     public static final String ACTION_MHDWIDGET_SEARCH = "cz.mikropsoft.android.mhdwidget.action.MHDWIDGET_SEARCH";
 
-    private ScheduledExecutorService mExecutor = Executors.newSingleThreadScheduledExecutor();
-    private AtomicInteger mIntervalCount = new AtomicInteger(1);
+    private ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+    private AtomicInteger updateCounter = new AtomicInteger();
 
     public MhdWidgetProvider() {
         super();
@@ -47,19 +49,24 @@ public class MhdWidgetProvider extends AppWidgetProvider {
         super.onReceive(context, intent);
 
         if (ACTION_MHDWIDGET_UPDATE.equals(intent.getAction())) {
-            mExecutor.scheduleAtFixedRate(new Runnable() {
+
+            int zastavkaId = Integer.parseInt(preferences.zastavkaId().get());
+            final AktualniSpoj aktualniSpoj = MhdDatabase.getAktualniSpoj(context, zastavkaId);
+
+            executor.scheduleAtFixedRate(new Runnable() {
                 @Override
                 public void run() {
-                    if (mIntervalCount.getAndIncrement() == UPDATE_INTERVAL) {
-                        mExecutor.shutdownNow();
+                    if (updateCounter.getAndIncrement() == UPDATE_INTERVAL) {
+                        executor.shutdownNow();
+                        updateAppWidget(context, null); // Aby se widget nastavil do výchozích hodnot
+                    } else {
+                        updateAppWidget(context, aktualniSpoj);
                     }
-
-                    updateAppWidget(context);
                 }
             }, 0, 1, TimeUnit.SECONDS);
         }
         if (ACTION_MHDWIDGET_SEARCH.equals(intent.getAction())) {
-            Log.d(LOG_TAG, "ACTION_MHDWIDGET_SEARCH");
+            Log.d(TAG, "ACTION_MHDWIDGET_SEARCH");
         }
     }
 
@@ -87,10 +94,9 @@ public class MhdWidgetProvider extends AppWidgetProvider {
      * Aktualizace widgetu na uživatelem vyvolanou akci.
      *
      * @param context aplikační kontext
+     * @param aktualniSpoj aktuální spoj
      */
-    public void updateAppWidget(Context context) {
-        int zastavkaId = Integer.parseInt(mhdPreferences.zastavkaId().get());
-        AktualniSpoj aktualniSpoj = restClient.getAktualniSpoj(zastavkaId, LocalTime.now()).getBody();
+    public void updateAppWidget(Context context, @Nullable AktualniSpoj aktualniSpoj) {
 
         Resources resources = context.getResources();
         RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.mhd_widget);
