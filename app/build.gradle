@@ -3,21 +3,26 @@ def AAVersion = "4.3.1"
 
 android {
     compileSdkVersion 26
-    buildToolsVersion "26.0.0"
+    buildToolsVersion "26.0.2"
     defaultConfig {
         applicationId "cz.mikropsoft.android.mhdwidget"
         minSdkVersion 25
         targetSdkVersion 26
-        versionCode 1
-        versionName "1.0.0-SNAPSHOT"
+        versionCode 2
+        versionName "2.0.0-SNAPSHOT"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [
+                        "logAppenderConsole": "true"
+                ]
+            }
+        }
     }
     buildTypes {
         debug{
-//            resValue "string", "preference_about_summary", "Verze: 1.0.0-SNAPSHOT"
         }
         release {
-//            resValue "string", "preference_about_summary", "Verze: 1.0.0-SNAPSHOT"
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
@@ -46,13 +51,18 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     compile 'junit:junit:4.12'
 
+    annotationProcessor 'android.arch.persistence.room:compiler:1.0.0'
+    compile 'android.arch.persistence.room:runtime:1.0.0'
+
     annotationProcessor "org.androidannotations:androidannotations:$AAVersion"
     compile "org.androidannotations:androidannotations-api:$AAVersion"
 
     annotationProcessor "org.androidannotations:rest-spring:$AAVersion"
     compile "org.androidannotations:rest-spring-api:$AAVersion"
 
+    annotationProcessor "org.androidannotations:rest-spring:$AAVersion"
+    compile "org.androidannotations:rest-spring-api:$AAVersion"
+
     compile 'org.springframework.android:spring-android-rest-template:2.0.0.M3'
-    compile('org.springframework.hateoas:spring-hateoas:0.16.0.RELEASE') { dep -> transitive = false }
     compile 'com.fasterxml.jackson.datatype:jackson-datatype-joda:2.6.7'
 }
