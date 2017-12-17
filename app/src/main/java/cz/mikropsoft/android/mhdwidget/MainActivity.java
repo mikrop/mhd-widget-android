@@ -1,27 +1,27 @@
 package cz.mikropsoft.android.mhdwidget;
 
 import android.app.ListActivity;
-import android.app.LoaderManager;
 import android.app.SearchManager;
 import android.content.Context;
-import android.content.Loader;
-import android.content.res.Resources;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.widget.SearchView;
 import android.widget.Toast;
 
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ItemClick;
 import org.androidannotations.annotations.OptionsItem;
 import org.androidannotations.annotations.OptionsMenu;
+import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.sharedpreferences.Pref;
 import org.androidannotations.rest.spring.annotations.RestService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import cz.mikropsoft.android.mhdwidget.adapters.ZastavkaAdapter;
@@ -29,10 +29,11 @@ import cz.mikropsoft.android.mhdwidget.databases.MhdDatabase;
 import cz.mikropsoft.android.mhdwidget.interfaces.MhdRestClient;
 import cz.mikropsoft.android.mhdwidget.model.Zastavka;
 
-@EActivity(R.layout.main)
+@EActivity
 @OptionsMenu(R.menu.options_menu)
-public class MainActivity extends ListActivity implements SearchView.OnQueryTextListener,
-        LoaderManager.LoaderCallbacks<List<Zastavka>> {
+public class MainActivity extends ListActivity implements SearchView.OnQueryTextListener {
+
+    private static final String TAG = MainActivity.class.getName();
 
     @Pref
     MhdPreferences_ preferences;
@@ -41,9 +42,24 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
     @RestService
     MhdRestClient restClient;
 
+    SwipeRefreshLayout swipeRefreshLayout;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.main);
+
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swiperefresh);
+        swipeRefreshLayout.setOnRefreshListener(
+                new SwipeRefreshLayout.OnRefreshListener() {
+                    @Override
+                    public void onRefresh() {
+                        loadFromRestClient();
+                        Log.d(TAG, "Seznam zastávek byl aktualizován");
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                }
+        );
     }
 
     @OptionsItem(R.id.action_preferences)
@@ -51,9 +67,21 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
         MhdPreferenceActivity_.intent(this).start();
     }
 
+    @Background
+    public void loadFromRestClient() {
+        List<Zastavka> nove = restClient.getZastavky().getBody();
+        List<Zastavka> zastavky = MhdDatabase.zastavkyUpdate(this, nove);
+        updateUI(zastavky);
+    }
+
+    @UiThread
+    void updateUI(List<Zastavka> zastavky) {
+        zastavkaAdapter.setData(zastavky);
+    }
+
     @AfterViews
     void afterViews() {
-//        getListView().setEmptyView(findViewById(android.R.id.empty));
+        zastavkaAdapter.setData(MhdDatabase.getInstance(this).zastavkaDao().getAll());
         getListView().setAdapter(zastavkaAdapter);
     }
 
@@ -73,36 +101,14 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
 
     @Override
     public boolean onQueryTextChange(String newText) {
-        String queryFiler = !TextUtils.isEmpty(newText) ? newText : null;
-        zastavkaAdapter.setQuery(queryFiler);
-
-        Bundle args = new Bundle();
-        args.putString("queryFiler", queryFiler);
-        getLoaderManager().restartLoader(0, args, this);
-
+        String constraint = !TextUtils.isEmpty(newText) ? newText : null;
+        zastavkaAdapter.getFilter().filter(constraint);
         return true;
     }
 
     @Override
     public boolean onQueryTextSubmit(String query) {
         return false;
-    }
-
-    //--- LoaderManager methods --------------------------------------------------------------------
-
-    @Override
-    public Loader<List<Zastavka>> onCreateLoader(int i, Bundle bundle) {
-        return new ZastavkyLoader(this, bundle, restClient);
-    }
-
-    @Override
-    public void onLoadFinished(Loader<List<Zastavka>> loader, List<Zastavka> zastavky) {
-        zastavkaAdapter.setData(zastavky);
-    }
-
-    @Override
-    public void onLoaderReset(Loader<List<Zastavka>> loader) {
-        zastavkaAdapter.setData(new ArrayList<Zastavka>());
     }
 
     //--- Item -------------------------------------------------------------------------------------

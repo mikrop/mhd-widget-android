@@ -3,6 +3,7 @@ package cz.mikropsoft.android.mhdwidget.databases;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
+import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Update;
 
@@ -51,13 +52,13 @@ public interface SpojDao {
     @Query("SELECT * FROM spoj WHERE zastavka_id = :zastavkaId AND odjezd >= :now LIMIT 1")
     Spoj findAktualniByZastavkaId(int zastavkaId, long now);
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAll(List<Spoj> spoje);
 
-    @Update
+    @Update(onConflict = OnConflictStrategy.REPLACE)
     void update(Spoj spoj);
 
     @Delete
-    void delete(Spoj spoj);
+    void delete(Spoj... spoje);
 
 }

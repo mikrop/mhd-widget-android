@@ -1,7 +1,6 @@
 package cz.mikropsoft.android.mhdwidget.databases;
 
 import android.arch.persistence.room.Database;
-import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
@@ -10,6 +9,10 @@ import android.util.Log;
 
 import org.joda.time.LocalTime;
 import org.junit.Assert;
+
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import cz.mikropsoft.android.mhdwidget.MainActivity;
 import cz.mikropsoft.android.mhdwidget.model.AktualniSpoj;
@@ -20,6 +23,13 @@ import cz.mikropsoft.android.mhdwidget.model.Zastavka;
 public abstract class MhdDatabase extends RoomDatabase {
 
     private static final String TAG = MainActivity.class.getName();
+    private static final Comparator<Zastavka> JMENOSMER_COMPARATOR = new Comparator<Zastavka>() {
+        @Override
+        public int compare(Zastavka o1, Zastavka o2) {
+            int compare = o1.getJmeno().compareTo(o2.getJmeno());
+            return ((compare == 0) ? o1.getSmer().compareTo(o2.getSmer()) : compare);
+        }
+    };
     private static MhdDatabase INSTANCE;
 
     public abstract ZastavkaDao zastavkaDao();
@@ -59,6 +69,40 @@ public abstract class MhdDatabase extends RoomDatabase {
         Assert.assertNotNull("ID zastávky nebylo předáno", zastavkaId);
         SpojDao spojDao = getInstance(context).spojDao();
         return spojDao.countByZastavkaId(zastavkaId) < 1;
+    }
+
+    /**
+     * Vrací příznak, zda se jedná o oblíbenou {@link Zastavka}.
+     *
+     * @param favorites oblíbené zastávky
+     * @param zastavka kontrolovaná zastávky
+     * @return {@code true} pokud je předaná zastávky, mezi oblíbenými, jinak {@code false}
+     */
+    private static boolean isZastavkaInFavorites(List<Zastavka> favorites, Zastavka zastavka) {
+        int index = Collections.binarySearch(favorites, zastavka, JMENOSMER_COMPARATOR);
+        boolean favorite = index > -1;
+        if (favorite)
+            Log.i(TAG, "Oblíbenou zastávkou je " + zastavka.getJmeno() + " ve směru " + zastavka.getSmer());
+        return favorite;
+    }
+
+    /**
+     * Aktualizuje databázi zastávek se zacháním příznaku {@link Zastavka#favorite} na oblíbených
+     * zastávkách.
+     *
+     * @param context
+     * @param nove zastávky k aktualizaci
+     * @return aktualizovaný seznam
+     */
+    public static List<Zastavka> zastavkyUpdate(Context context, List<Zastavka> nove) {
+        ZastavkaDao zastavkaDao = getInstance(context).zastavkaDao();
+        List<Zastavka> favorites = zastavkaDao.findFavorites();
+        for (Zastavka zastavka : nove) {
+            zastavka.setFavorite(isZastavkaInFavorites(favorites, zastavka));
+        }
+        zastavkaDao.deleteAll();
+        zastavkaDao.insertAll(nove);
+        return zastavkaDao.getAll();
     }
 
     /**

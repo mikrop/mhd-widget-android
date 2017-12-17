@@ -1,46 +1,40 @@
 package cz.mikropsoft.android.mhdwidget.adapters;
 
 import android.content.Context;
-import android.util.Log;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Filter;
+import android.widget.Filterable;
 
-import org.androidannotations.annotations.AfterInject;
-import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.RootContext;
-import org.androidannotations.annotations.UiThread;
-import org.androidannotations.rest.spring.annotations.RestService;
+import org.springframework.util.CollectionUtils;
 
+import java.text.Normalizer;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
-import cz.mikropsoft.android.mhdwidget.databases.MhdDatabase;
+import cz.mikropsoft.android.mhdwidget.MainActivity;
 import cz.mikropsoft.android.mhdwidget.ZastavkaItemView;
 import cz.mikropsoft.android.mhdwidget.ZastavkaItemView_;
+import cz.mikropsoft.android.mhdwidget.databases.MhdDatabase;
 import cz.mikropsoft.android.mhdwidget.databases.ZastavkaDao;
-import cz.mikropsoft.android.mhdwidget.interfaces.MhdRestClient;
 import cz.mikropsoft.android.mhdwidget.model.Zastavka;
 
 @EBean
-public class ZastavkaAdapter extends BaseAdapter {
+public class ZastavkaAdapter extends BaseAdapter implements Filterable {
 
     private static final String TAG = ZastavkaAdapter.class.getName();
-
-    List<Zastavka> zastavky = new ArrayList<>();
-    String query;
 
     @RootContext
     Context context;
 
-    @RestService
-    MhdRestClient restClient;
-
-    @AfterInject
-    void afterInject() {
-        loadAllZastavky();
-    }
+    List<Zastavka> zastavky = new ArrayList<>();
+    ZastavkaFilter filter = new ZastavkaFilter();
 
     @Override
     public int getCount() {
@@ -62,7 +56,7 @@ public class ZastavkaAdapter extends BaseAdapter {
 
         ZastavkaItemView zastavkaItemView;
         if (convertView == null) {
-            zastavkaItemView = ZastavkaItemView_.build(context);
+            zastavkaItemView = ZastavkaItemView_.build(parent.getContext());
         } else {
             zastavkaItemView = (ZastavkaItemView) convertView;
         }
@@ -71,37 +65,53 @@ public class ZastavkaAdapter extends BaseAdapter {
 
     }
 
-    @Background
-    void loadAllZastavky() {
-
-        ZastavkaDao zastavkaDao = MhdDatabase.getInstance(context).zastavkaDao();
-        if (zastavkaDao.getAll().isEmpty()) {
-            List<Zastavka> zastavky = restClient.getZastavky().getBody();
-            Log.d(TAG, "Načteno " + zastavky.size() + " zastávek z aplikačního serveru");
-            zastavkaDao.insertAll(zastavky);
-        }
-
-        List<Zastavka> result = zastavkaDao.getAll();
-        updateUI(result);
+    @Override
+    public Filter getFilter() {
+        return filter;
     }
 
-    @UiThread
-    void updateUI(List<Zastavka> result) {
-        ZastavkaAdapter.this.zastavky = result;
-        notifyDataSetChanged();
+    private class ZastavkaFilter extends Filter {
+
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+
+            List<Zastavka> original = MhdDatabase.getInstance(context).zastavkaDao().getAll();
+            int size = original.size();
+            List<Zastavka> values = new ArrayList<>(size);
+
+            if (constraint == null) {
+                values.addAll(original);
+            } else {
+                for (int i = 0; i < size; i++) {
+                    Zastavka filterable = original.get(i);
+                    String normalize = Normalizer.normalize(filterable.getJmeno(), Normalizer.Form.NFD)
+                            .replaceAll("[^\\p{ASCII}]", "");
+                    if (!TextUtils.isEmpty(constraint) && normalize.toLowerCase().contains(constraint)) {
+                        values.add(filterable);
+                    } else if (filterable.isFavorite()) {
+                        values.add(filterable);
+                    }
+                }
+            }
+
+            FilterResults results = new FilterResults();
+            results.values = values;
+            results.count = values.size();
+            return results;
+        }
+
+        @Override
+        @SuppressWarnings("unchecked")
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            setData((ArrayList<Zastavka>) results.values);
+        }
+
     }
 
     public void setData(List<Zastavka> zastavky) {
+        Collections.sort(zastavky);
         this.zastavky = zastavky;
         notifyDataSetChanged();
-    }
-
-    public String getQuery() {
-        return query;
-    }
-
-    public void setQuery(String query) {
-        query = query;
     }
 
 }

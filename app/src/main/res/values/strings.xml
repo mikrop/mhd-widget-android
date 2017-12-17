@@ -15,5 +15,5 @@
     <string name="empty_favorites">Žádné preferované zastávky&#8230;</string>
     <string name="preference_about_summary">Verze %1$s</string>
     <string name="zastavky_empty_list">Dosud nebyl načten seznam zastávek</string>
-    <string name="aktualozovan_seznam_spoju">Seznam spojů byl aktualozován</string>
+    <string name="aktualozovan_seznam_spoju">Seznam spojů byl aktualizován</string>
 </resources>

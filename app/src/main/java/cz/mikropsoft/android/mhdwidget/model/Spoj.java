@@ -6,6 +6,7 @@ import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
 import android.arch.persistence.room.TypeConverters;
+import android.support.annotation.NonNull;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -28,10 +29,12 @@ import cz.mikropsoft.android.mhdwidget.databases.Converters;
 @TypeConverters(Converters.class)
 public class Spoj {
 
+    @NonNull
     @JsonIgnore
     @PrimaryKey(autoGenerate = true)
     private int id;
 
+    @NonNull
     @ColumnInfo(name = "zastavka_id")
     private int zastavkaId;
 
@@ -40,6 +43,7 @@ public class Spoj {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
     private LocalTime predchozi;
 
+    @NonNull
     @JsonSerialize(using = LocalTimeSerializer.class)
     @JsonDeserialize(using = LocalTimeDeserializer.class)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
@@ -58,6 +62,7 @@ public class Spoj {
         this.id = id;
     }
 
+    @NonNull
     public int getZastavkaId() {
         return zastavkaId;
     }
@@ -74,6 +79,7 @@ public class Spoj {
         this.predchozi = predchozi;
     }
 
+    @NonNull
     public LocalTime getOdjezd() {
         return odjezd;
     }

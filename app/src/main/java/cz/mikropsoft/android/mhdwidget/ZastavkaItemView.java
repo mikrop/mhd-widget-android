@@ -52,14 +52,26 @@ public class ZastavkaItemView extends LinearLayout {
 
                     CheckBox cb = (CheckBox) v;
                     zastavka.setFavorite(cb.isChecked());
-                    ZastavkaDao zastavkaDao = MhdDatabase.getInstance(getContext()).zastavkaDao();
+                    MhdDatabase database = MhdDatabase.getInstance(getContext());
+                    ZastavkaDao zastavkaDao = database.zastavkaDao();
                     zastavkaDao.update(zastavka);
 
+                    boolean favorite = cb.isChecked();
                     int zastavkaId = zastavka.getId();
-                    if (cb.isChecked() && MhdDatabase.isSpojEmpty(getContext(), zastavkaId)) {
-                        loadAllSpoje(zastavkaId); // Stažení spojů k preferované zastávce
+                    boolean spojEmpty = MhdDatabase.isSpojEmpty(getContext(), zastavkaId);
+                    if (favorite) {
+                        if (spojEmpty) {
+                            loadAllSpoje(zastavkaId); // Stažení spojů k preferované zastávce
+                        }
                     } else {
-                        Log.d(TAG, "Spoje ze zastávky " + zastavka.getJmeno() + " již byly staženy");
+                        if (!spojEmpty) {
+                            SpojDao spojDao = database.spojDao();
+                            List<Spoj> spoje = spojDao.findByZastavkaId(zastavkaId);
+                            spojDao.delete(spoje.toArray(new Spoj[spoje.size()]));
+                            Log.d(TAG, "Spoje ze zastávky " + zastavka.getJmeno() + " byly smazány");
+                        } else {
+                            Log.d(TAG, "Spoje ze zastávky " + zastavka.getJmeno() + " již byly staženy");
+                        }
                     }
 
                 }
