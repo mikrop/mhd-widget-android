@@ -47,7 +47,7 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
+        setContentView(R.layout.activity_main);
 
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swiperefresh);
         swipeRefreshLayout.setOnRefreshListener(
@@ -81,6 +81,7 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
 
     @AfterViews
     void afterViews() {
+        getListView().setEmptyView(findViewById(android.R.id.empty));
         zastavkaAdapter.setData(MhdDatabase.getInstance(this).zastavkaDao().getAll());
         getListView().setAdapter(zastavkaAdapter);
     }
