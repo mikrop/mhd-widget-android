@@ -10,19 +10,16 @@ import android.widget.Filterable;
 
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.RootContext;
-import org.springframework.util.CollectionUtils;
+import org.junit.Assert;
 
 import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
-import cz.mikropsoft.android.mhdwidget.MainActivity;
 import cz.mikropsoft.android.mhdwidget.ZastavkaItemView;
 import cz.mikropsoft.android.mhdwidget.ZastavkaItemView_;
 import cz.mikropsoft.android.mhdwidget.databases.MhdDatabase;
-import cz.mikropsoft.android.mhdwidget.databases.ZastavkaDao;
 import cz.mikropsoft.android.mhdwidget.model.Zastavka;
 
 @EBean
@@ -33,8 +30,15 @@ public class ZastavkaAdapter extends BaseAdapter implements Filterable {
     @RootContext
     Context context;
 
-    List<Zastavka> zastavky = new ArrayList<>();
     ZastavkaFilter filter = new ZastavkaFilter();
+    List<Zastavka> zastavky = new ArrayList<>();
+    public void setData(List<Zastavka> zastavky) {
+        Assert.assertNotNull(zastavky);
+
+        Collections.sort(zastavky);
+        this.zastavky = zastavky;
+        notifyDataSetChanged();
+    }
 
     @Override
     public int getCount() {
@@ -106,12 +110,6 @@ public class ZastavkaAdapter extends BaseAdapter implements Filterable {
             setData((ArrayList<Zastavka>) results.values);
         }
 
-    }
-
-    public void setData(List<Zastavka> zastavky) {
-        Collections.sort(zastavky);
-        this.zastavky = zastavky;
-        notifyDataSetChanged();
     }
 
 }

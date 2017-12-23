@@ -17,13 +17,12 @@
             android:layout_height="match_parent"
             />
     </android.support.v4.widget.SwipeRefreshLayout>
-    <TextView
-        android:id="@+id/empty"
-        android:text="@string/empty_zastavky_list"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:gravity="center"
-        />
-
+    <!--<TextView-->
+        <!--android:id="@+id/empty"-->
+        <!--android:text="@string/empty_zastavky_list"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_gravity="center"-->
+        <!--android:gravity="center"-->
+        <!--/>-->
 </RelativeLayout>

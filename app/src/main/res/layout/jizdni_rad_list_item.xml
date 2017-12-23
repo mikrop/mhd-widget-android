@@ -5,31 +5,23 @@
     android:layout_height="?android:attr/listPreferredItemHeight">
 
     <TextView
-        android:id="@+id/textViewLinka"
+        android:id="@+id/textViewHodina"
         android:layout_width="?android:attr/listPreferredItemHeight"
         android:layout_height="fill_parent"
-        android:background="@mipmap/ic_tram"
-        android:text="@string/oznaceni_label"
+        android:text="Hodina"
         android:scaleType="center"
         android:focusable="true"
         android:gravity="center"
         />
     <TextView
-        android:id="@+id/textViewJmeno"
+        android:id="@+id/textViewMinuty"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_weight="1"
         android:gravity="left|center_vertical"
-        android:text="@string/zastavka_label"
+        android:text="Minuty"
+        android:textSize="18sp"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:focusable="true"
-        />
-    <CheckBox
-        android:id="@+id/checkBoxFavorite"
-        android:layout_width="?android:attr/listPreferredItemHeight"
-        android:layout_height="fill_parent"
-        style="?android:attr/starStyle"
-        android:scaleType="center"
         android:focusable="true"
         />
 </LinearLayout>

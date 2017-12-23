@@ -10,17 +10,19 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <action android:name="android.intent.action.SEARCH" />
+                <action android:name="cz.mikropsoft.android.mhdwidget.action.MHDWIDGET_SEARCH" />
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
             <meta-data android:name="android.app.searchable"
                 android:resource="@xml/searchable"/>
         </activity>
+        <activity android:name=".JizdniRadActivity_"
+            android:parentActivityName=".MainActivity_"
+            android:label="@string/jizdni_rad_label">
+        </activity>
         <activity android:name=".MhdPreferenceActivity_"
             android:parentActivityName=".MainActivity_"
             android:label="@string/preference_label">
-            <intent-filter>
-                <action android:name="cz.mikropsoft.android.mhdwidget.action.MHDWIDGET_SEARCH" />
-            </intent-filter>
         </activity>
 
         <receiver

@@ -9,17 +9,14 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.widget.SearchView;
-import android.widget.Toast;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EActivity;
-import org.androidannotations.annotations.ItemClick;
 import org.androidannotations.annotations.OptionsItem;
 import org.androidannotations.annotations.OptionsMenu;
 import org.androidannotations.annotations.UiThread;
-import org.androidannotations.annotations.sharedpreferences.Pref;
 import org.androidannotations.rest.spring.annotations.RestService;
 
 import java.util.List;
@@ -35,8 +32,6 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
 
     private static final String TAG = MainActivity.class.getName();
 
-    @Pref
-    MhdPreferences_ preferences;
     @Bean
     ZastavkaAdapter zastavkaAdapter;
     @RestService
@@ -81,7 +76,7 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
 
     @AfterViews
     void afterViews() {
-        getListView().setEmptyView(findViewById(android.R.id.empty));
+//        getListView().setEmptyView(findViewById(android.R.id.empty));
         zastavkaAdapter.setData(MhdDatabase.getInstance(this).zastavkaDao().getAll());
         getListView().setAdapter(zastavkaAdapter);
     }
@@ -110,25 +105,6 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
     @Override
     public boolean onQueryTextSubmit(String query) {
         return false;
-    }
-
-    //--- Item -------------------------------------------------------------------------------------
-
-    @ItemClick
-    void listItemClicked(Zastavka zastavka) {
-
-        int zastavkaId = zastavka.getId();
-        if (MhdDatabase.isSpojEmpty(getApplicationContext(), zastavkaId)) {
-            Toast.makeText(this, "Spoje zastávky nebyly dosud staženy", Toast.LENGTH_LONG).show();
-        } else {
-
-            preferences.edit().zastavkaId()
-                    .put("" + zastavkaId)
-                    .apply();
-
-            String text = getResources().getString(R.string.zobrazovana_label, zastavka.getJmeno());
-            Toast.makeText(this, text, Toast.LENGTH_LONG).show();
-        }
     }
 
 }

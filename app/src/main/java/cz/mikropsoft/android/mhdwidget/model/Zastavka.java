@@ -2,14 +2,25 @@ package cz.mikropsoft.android.mhdwidget.model;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
+import android.arch.persistence.room.TypeConverters;
 import android.support.annotation.NonNull;
 
+import cz.mikropsoft.android.mhdwidget.databases.Converters;
+import cz.mikropsoft.android.mhdwidget.databases.ProstredekConverter;
+
 @Entity
+@TypeConverters(ProstredekConverter.class)
 public class Zastavka implements Comparable<Zastavka> {
 
     @NonNull
     @PrimaryKey(autoGenerate = true)
     private int id;
+
+    @NonNull
+    private String linka; // Označení linky
+
+    @NonNull
+    private Prostredek prostredek;
 
     @NonNull
     private String smer;
@@ -25,6 +36,24 @@ public class Zastavka implements Comparable<Zastavka> {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    @NonNull
+    public String getLinka() {
+        return linka;
+    }
+
+    public void setLinka(@NonNull String linka) {
+        this.linka = linka;
+    }
+
+    @NonNull
+    public Prostredek getProstredek() {
+        return prostredek;
+    }
+
+    public void setProstredek(@NonNull Prostredek prostredek) {
+        this.prostredek = prostredek;
     }
 
     @NonNull

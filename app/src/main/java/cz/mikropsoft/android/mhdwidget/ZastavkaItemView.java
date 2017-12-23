@@ -12,6 +12,7 @@ import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EViewGroup;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
+import org.androidannotations.annotations.sharedpreferences.Pref;
 import org.androidannotations.rest.spring.annotations.RestService;
 
 import java.util.List;
@@ -28,14 +29,15 @@ public class ZastavkaItemView extends LinearLayout {
 
     private static final String TAG = ZastavkaItemView.class.getName();
 
-    @ViewById
-    CheckBox checkBoxFavorite;
+    @Pref
+    MhdPreferences_ preferences;
 
+    @ViewById
+    TextView textViewLinka;
     @ViewById
     TextView textViewJmeno;
-
     @ViewById
-    TextView textViewSmer;
+    CheckBox checkBoxFavorite;
 
     @RestService
     MhdRestClient restClient;
@@ -46,6 +48,20 @@ public class ZastavkaItemView extends LinearLayout {
 
     public void bind(final Zastavka zastavka) {
         if (zastavka != null) {
+            int zastavkaId = zastavka.getId();
+
+            textViewLinka.setText(zastavka.getLinka());
+            textViewLinka.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (MhdDatabase.isSpojEmpty(getContext(), zastavkaId)) {
+                        Toast.makeText(getContext(), "Spoje zastávky nebyly dosud staženy", Toast.LENGTH_LONG).show();
+                    } else {
+                        JizdniRadActivity_.intent(getContext()).zastavkaId(zastavkaId).start();
+                    }
+                }
+            });
+
             checkBoxFavorite.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -57,7 +73,6 @@ public class ZastavkaItemView extends LinearLayout {
                     zastavkaDao.update(zastavka);
 
                     boolean favorite = cb.isChecked();
-                    int zastavkaId = zastavka.getId();
                     boolean spojEmpty = MhdDatabase.isSpojEmpty(getContext(), zastavkaId);
                     if (favorite) {
                         if (spojEmpty) {
@@ -76,9 +91,27 @@ public class ZastavkaItemView extends LinearLayout {
 
                 }
             });
+
             checkBoxFavorite.setChecked(zastavka.isFavorite());
+            textViewJmeno.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    if (MhdDatabase.isSpojEmpty(getContext(), zastavkaId)) {
+                        Toast.makeText(getContext(), "Spoje zastávky nebyly dosud staženy", Toast.LENGTH_LONG).show();
+                    } else {
+
+                        preferences.edit().zastavkaId()
+                                .put("" + zastavkaId)
+                                .apply();
+
+                        String text = getResources().getString(R.string.zobrazovana_label, zastavka.getJmeno());
+                        Toast.makeText(getContext(), text, Toast.LENGTH_LONG).show();
+                    }
+
+                }
+            });
             textViewJmeno.setText(zastavka.getJmeno());
-            textViewSmer.setText(zastavka.getSmer());
         }
     }
 
@@ -103,10 +136,5 @@ public class ZastavkaItemView extends LinearLayout {
     void updateUI(List<Spoj> spoje) {
         Toast.makeText(getContext(), R.string.aktualozovan_seznam_spoju, Toast.LENGTH_LONG).show();
     }
-
-//    @CheckedChange(R.id.checkBoxFavorite)
-//    void checkBoxFavoriteChange(CheckBox checkBoxFavorite, boolean checked) {
-//        System.out.println();
-//    }
 
 }
