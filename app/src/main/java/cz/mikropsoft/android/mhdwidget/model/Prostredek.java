@@ -14,6 +14,9 @@ public enum Prostredek {
     TRAMVAJ(R.drawable.ic_tram)
     ;
 
+    /**
+     * ID obrázku z resouces.
+     */
     int resid;
 
     private Prostredek(int resid) {

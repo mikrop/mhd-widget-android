@@ -14,9 +14,9 @@ import cz.mikropsoft.android.mhdwidget.model.Zastavka;
 
 //@Rest(rootUrl = "http://10.0.3.2:8080/api",
 //@Rest(rootUrl = "http://192.168.88.13:8080/api",
-@Rest(rootUrl = "http://172.16.10.63:8080/api",
+//@Rest(rootUrl = "http://172.16.10.63:8080/api",
 //@Rest(rootUrl = "http://mhdwidgetapi-mikropsoft.rhcloud.com/api",
-//@Rest(rootUrl = "https://mhd-widget.herokuapp.com/api",
+@Rest(rootUrl = "https://mhd-widget.herokuapp.com/api",
         converters = { MappingJackson2HttpMessageConverter.class }
 )
 public interface MhdRestClient extends RestClientErrorHandling {
