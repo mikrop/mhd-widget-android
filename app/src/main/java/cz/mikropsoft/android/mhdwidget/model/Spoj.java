@@ -27,7 +27,7 @@ import cz.mikropsoft.android.mhdwidget.databases.Converters;
         onDelete = ForeignKey.CASCADE)
 )
 @TypeConverters(Converters.class)
-public class Spoj {
+public class Spoj implements Comparable<Spoj> {
 
     @NonNull
     @JsonIgnore
@@ -53,6 +53,9 @@ public class Spoj {
     @JsonDeserialize(using = LocalTimeDeserializer.class)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
     private LocalTime nasledujici;
+
+    @JsonIgnore
+    private boolean aktualni;
 
     public int getId() {
         return id;
@@ -84,7 +87,7 @@ public class Spoj {
         return odjezd;
     }
 
-    public void setOdjezd(LocalTime odjezd) {
+    public void setOdjezd(@NonNull LocalTime odjezd) {
         this.odjezd = odjezd;
     }
 
@@ -95,4 +98,23 @@ public class Spoj {
     public void setNasledujici(LocalTime nasledujici) {
         this.nasledujici = nasledujici;
     }
+
+    /**
+     * Příznak, zda se jedná o {@link Spoj}, který je aktuálně nařadě.
+     *
+     * @return {@code true}, pokud jde o aktu8ln9 spoje, jinak {@code false}
+     */
+    public boolean isAktualni() {
+        return aktualni;
+    }
+
+    public void setAktualni(boolean aktualni) {
+        this.aktualni = aktualni;
+    }
+
+    @Override
+    public int compareTo(@NonNull Spoj o) {
+        return o.getOdjezd().compareTo(getOdjezd());
+    }
+
 }

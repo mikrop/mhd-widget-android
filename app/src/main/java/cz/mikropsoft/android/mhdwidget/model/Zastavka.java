@@ -5,12 +5,26 @@ import android.arch.persistence.room.PrimaryKey;
 import android.arch.persistence.room.TypeConverters;
 import android.support.annotation.NonNull;
 
-import cz.mikropsoft.android.mhdwidget.databases.Converters;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import java.util.Comparator;
+
 import cz.mikropsoft.android.mhdwidget.databases.ProstredekConverter;
 
 @Entity
 @TypeConverters(ProstredekConverter.class)
 public class Zastavka implements Comparable<Zastavka> {
+
+    /**
+     * Comparátor dle zastávek, dle jména a směru.
+     */
+    public static final Comparator<Zastavka> JMENOSMER_COMPARATOR = new Comparator<Zastavka>() {
+        @Override
+        public int compare(Zastavka o1, Zastavka o2) {
+            int compare = o1.getJmeno().compareTo(o2.getJmeno());
+            return ((compare == 0) ? o1.getSmer().compareTo(o2.getSmer()) : compare);
+        }
+    };
 
     @NonNull
     @PrimaryKey(autoGenerate = true)
@@ -28,6 +42,7 @@ public class Zastavka implements Comparable<Zastavka> {
     @NonNull
     private String jmeno;
 
+    @JsonIgnore
     private boolean favorite;
 
     public int getId() {
@@ -61,7 +76,7 @@ public class Zastavka implements Comparable<Zastavka> {
         return smer;
     }
 
-    public void setSmer(String smer) {
+    public void setSmer(@NonNull String smer) {
         this.smer = smer;
     }
 
@@ -70,7 +85,7 @@ public class Zastavka implements Comparable<Zastavka> {
         return jmeno;
     }
 
-    public void setJmeno(String jmeno) {
+    public void setJmeno(@NonNull String jmeno) {
         this.jmeno = jmeno;
     }
 

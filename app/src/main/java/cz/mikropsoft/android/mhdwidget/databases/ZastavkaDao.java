@@ -44,15 +44,18 @@ public interface ZastavkaDao {
 //    List<Zastavka> findByJmeno(String arg0);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertAll(List<Zastavka> zastavky);
+    void insert(Zastavka zastavka);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertAll(Iterable<Zastavka> zastavky);
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
     void update(Zastavka zastavka);
 
     @Delete
-    void delete(Zastavka zastavky);
+    void delete(Zastavka zastavka);
 
-    @Query("DELETE FROM zastavka")
-    void deleteAll();
+    @Delete
+    void deleteAll(Iterable<Zastavka> zastavky);
 
 }

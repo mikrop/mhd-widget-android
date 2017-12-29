@@ -11,12 +11,13 @@
     <string name="widget_nasledujici">následující</string>
     <string name="zastavka_label">zastávka</string>
     <string name="smer_label">směr</string>
-    <string name="oznaceni_label">ozn.</string>
+    <string name="oznaceni_label"/>
     <string name="search_label">Jméno zastávky</string>
     <string name="zobrazovana_label">Zobrazovaná zastávka %1$s</string>
     <string name="empty_favorites">Žádné preferované zastávky&#8230;</string>
     <string name="empty_zastavky_list">Swipe down pro aktualizaci seznamu</string>
     <string name="preference_about_summary">Verze %1$s</string>
     <string name="zastavky_empty_list">Dosud nebyl načten seznam zastávek</string>
-    <string name="aktualozovan_seznam_spoju">Seznam spojů byl aktualizován</string>
+    <string name="zastavky_aktualozovany">Seznam zastávek byl aktualizován</string>
+    <string name="jizdni_rad_stazen">Jízdní řád byl stažen</string>
 </resources>

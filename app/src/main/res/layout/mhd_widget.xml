@@ -11,7 +11,7 @@
     <LinearLayout
         android:id="@+id/widget_layout"
         android:orientation="vertical"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1">
 
@@ -64,7 +64,9 @@
         android:id="@+id/search_button"
         android:layout_width="60dp"
         android:layout_height="match_parent"
-        android:src="@mipmap/ic_search"
-        android:layout_margin="4dp" />
+        android:src="@drawable/ic_search"
+        android:layout_margin="4dp"
+        android:contentDescription="@string/button_search"
+        />
 
 </LinearLayout>

@@ -1,5 +1,6 @@
 package cz.mikropsoft.android.mhdwidget;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.util.Log;
 import android.view.View;
@@ -16,10 +17,10 @@ import org.androidannotations.annotations.sharedpreferences.Pref;
 import org.androidannotations.rest.spring.annotations.RestService;
 
 import java.util.List;
+import java.util.Objects;
 
 import cz.mikropsoft.android.mhdwidget.databases.MhdDatabase;
 import cz.mikropsoft.android.mhdwidget.databases.SpojDao;
-import cz.mikropsoft.android.mhdwidget.databases.ZastavkaDao;
 import cz.mikropsoft.android.mhdwidget.interfaces.MhdRestClient;
 import cz.mikropsoft.android.mhdwidget.model.Spoj;
 import cz.mikropsoft.android.mhdwidget.model.Zastavka;
@@ -42,6 +43,8 @@ public class ZastavkaItemView extends LinearLayout {
     @RestService
     MhdRestClient restClient;
 
+    private ProgressDialog progressDialog;
+
     public ZastavkaItemView(Context context) {
         super(context);
     }
@@ -50,91 +53,97 @@ public class ZastavkaItemView extends LinearLayout {
         if (zastavka != null) {
             int zastavkaId = zastavka.getId();
 
-            textViewLinka.setText(zastavka.getLinka());
+//            textViewLinka.setText(zastavka.getLinka());
+            textViewLinka.setBackgroundResource(zastavka.getProstredek().getResid());
             textViewLinka.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (MhdDatabase.isSpojEmpty(getContext(), zastavkaId)) {
-                        Toast.makeText(getContext(), "Spoje zastávky nebyly dosud staženy", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getContext(), "Jízdní řád nebyl ještě stažen", Toast.LENGTH_LONG).show();
                     } else {
                         JizdniRadActivity_.intent(getContext()).zastavkaId(zastavkaId).start();
                     }
                 }
             });
 
-            checkBoxFavorite.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    CheckBox cb = (CheckBox) v;
-                    zastavka.setFavorite(cb.isChecked());
-                    MhdDatabase database = MhdDatabase.getInstance(getContext());
-                    ZastavkaDao zastavkaDao = database.zastavkaDao();
-                    zastavkaDao.update(zastavka);
-
-                    boolean favorite = cb.isChecked();
-                    boolean spojEmpty = MhdDatabase.isSpojEmpty(getContext(), zastavkaId);
-                    if (favorite) {
-                        if (spojEmpty) {
-                            loadAllSpoje(zastavkaId); // Stažení spojů k preferované zastávce
-                        }
-                    } else {
-                        if (!spojEmpty) {
-                            SpojDao spojDao = database.spojDao();
-                            List<Spoj> spoje = spojDao.findByZastavkaId(zastavkaId);
-                            spojDao.delete(spoje.toArray(new Spoj[spoje.size()]));
-                            Log.d(TAG, "Spoje ze zastávky " + zastavka.getJmeno() + " byly smazány");
-                        } else {
-                            Log.d(TAG, "Spoje ze zastávky " + zastavka.getJmeno() + " již byly staženy");
-                        }
-                    }
-
-                }
-            });
-
-            checkBoxFavorite.setChecked(zastavka.isFavorite());
+//            if (zastavkaId == Integer.parseInt(preferences.zastavkaId().get())) {
+//                textViewJmeno.setTypeface(textViewJmeno.getTypeface(), Typeface.BOLD);
+//            }
+            textViewJmeno.setText(zastavka.getJmeno());
             textViewJmeno.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
                     if (MhdDatabase.isSpojEmpty(getContext(), zastavkaId)) {
-                        Toast.makeText(getContext(), "Spoje zastávky nebyly dosud staženy", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getContext(), "Jízdní řád nebyl ještě stažen", Toast.LENGTH_LONG).show();
                     } else {
 
                         preferences.edit().zastavkaId()
-                                .put("" + zastavkaId)
+                                .put(Objects.toString(zastavkaId))
                                 .apply();
 
                         String text = getResources().getString(R.string.zobrazovana_label, zastavka.getJmeno());
                         Toast.makeText(getContext(), text, Toast.LENGTH_LONG).show();
                     }
-
                 }
             });
-            textViewJmeno.setText(zastavka.getJmeno());
+
+            checkBoxFavorite.setChecked(zastavka.isFavorite());
+            checkBoxFavorite.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    CheckBox cb = (CheckBox) v;
+                    boolean spojEmpty = MhdDatabase.isSpojEmpty(getContext(), zastavkaId);
+                    if (cb.isChecked()) {
+                        if (spojEmpty) {
+                            progressDialog = ProgressDialog.show(getContext(), "Stahování",
+                                    "Jízdního řádu...", true);
+
+                            loadAllSpoje(zastavkaId); // Stažení spojů k preferované zastávce
+                        }
+                    } else {
+                        if (!spojEmpty) {
+
+                            SpojDao spojDao = MhdDatabase.getInstance(getContext()).spojDao();
+                            spojDao.delete(spojDao.findByZastavkaId(zastavkaId));
+                            MhdDatabase.setFavorite(getContext(), zastavkaId, false);
+
+                            Log.d(TAG, "Spoje ze zastávky " + zastavka.getJmeno() + " byly smazány");
+
+                        } else {
+                            Log.d(TAG, "Spoje ze zastávky " + zastavka.getJmeno() + " již byly staženy");
+                        }
+                    }
+                }
+            });
         }
     }
 
     @Background
     void loadAllSpoje(int zastavkaId) {
-        Log.d(TAG, "Aktualozace spojů zastávky ID: " + zastavkaId);
+        Log.d(TAG, "Aktualizace spojů zastávky ID: " + zastavkaId);
 
-        SpojDao spojDao = MhdDatabase.getInstance(getContext()).spojDao();
         if (MhdDatabase.isSpojEmpty(getContext(), zastavkaId)) {
+
             List<Spoj> spoje = restClient.getSpoje(zastavkaId).getBody();
+            SpojDao spojDao = MhdDatabase.getInstance(getContext()).spojDao();
             spojDao.insertAll(spoje);
             Log.d(TAG, "Uloženo " + spoje.size() + " spojů zastávky");
+
         } else {
             // TODO[HAJEK] Dořešit aktualizaci již uložených spojů
         }
 
-        List<Spoj> result = spojDao.findByZastavkaId(zastavkaId);
-        updateUI(result);
+        updateUI(zastavkaId);
     }
 
     @UiThread
-    void updateUI(List<Spoj> spoje) {
-        Toast.makeText(getContext(), R.string.aktualozovan_seznam_spoju, Toast.LENGTH_LONG).show();
+    void updateUI(int zastavkaId) {
+        progressDialog.dismiss();
+
+        MhdDatabase.setFavorite(getContext(), zastavkaId, true);
+        Toast.makeText(getContext(), R.string.jizdni_rad_stazen, Toast.LENGTH_LONG).show();
     }
 
 }

@@ -11,7 +11,9 @@ import org.androidannotations.rest.spring.annotations.RestService;
 import org.joda.time.LocalTime;
 
 import cz.mikropsoft.android.mhdwidget.adapters.JizdniRadAdapter;
+import cz.mikropsoft.android.mhdwidget.databases.MhdDatabase;
 import cz.mikropsoft.android.mhdwidget.interfaces.MhdRestClient;
+import cz.mikropsoft.android.mhdwidget.model.Zastavka;
 
 @EActivity(R.layout.activity_jizdni_rad)
 public class JizdniRadActivity extends ListActivity {
@@ -31,6 +33,9 @@ public class JizdniRadActivity extends ListActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_jizdni_rad);
+
+        Zastavka zastavka = MhdDatabase.getInstance(this).zastavkaDao().finOne(zastavkaId);
+        this.setTitle(zastavka.getJmeno());
 
 //        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swiperefresh);
 //        swipeRefreshLayout.setOnRefreshListener(

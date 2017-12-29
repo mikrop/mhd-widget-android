@@ -5,23 +5,22 @@
     android:layout_height="?android:attr/listPreferredItemHeight">
 
     <TextView
-        android:id="@+id/textViewHodina"
+        android:id="@+id/textViewHodinaDne"
         android:layout_width="?android:attr/listPreferredItemHeight"
         android:layout_height="fill_parent"
-        android:text="Hodina"
-        android:scaleType="center"
-        android:focusable="true"
         android:gravity="center"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:focusable="true"
+        android:scaleType="center"
+        android:textStyle="bold"
         />
     <TextView
         android:id="@+id/textViewMinuty"
-        android:layout_width="fill_parent"
+        android:layout_width="0dp"
         android:layout_height="fill_parent"
         android:layout_weight="1"
-        android:gravity="left|center_vertical"
-        android:text="Minuty"
-        android:textSize="18sp"
-        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:gravity="start|center_vertical"
+        android:textAppearance="?android:attr/textAppearanceMedium"
         android:focusable="true"
         />
 </LinearLayout>

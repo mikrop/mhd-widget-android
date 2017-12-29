@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.widget.SearchView;
+import android.widget.Toast;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
@@ -72,6 +73,7 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
     @UiThread
     void updateUI(List<Zastavka> zastavky) {
         zastavkaAdapter.setData(zastavky);
+        Toast.makeText(this, R.string.zastavky_aktualozovany, Toast.LENGTH_LONG).show();
     }
 
     @AfterViews

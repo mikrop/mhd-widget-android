@@ -7,13 +7,9 @@ import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Update;
 
-import org.joda.time.LocalTime;
-
-import java.util.Date;
 import java.util.List;
 
 import cz.mikropsoft.android.mhdwidget.model.Spoj;
-import cz.mikropsoft.android.mhdwidget.model.Zastavka;
 
 @Dao
 public interface SpojDao {
@@ -43,6 +39,16 @@ public interface SpojDao {
     int countByZastavkaId(int zastavkaId);
 
     /**
+     * Vrací první spoj z předané zastávky.
+     *
+     * @param zastavkaId ID zastávky
+     * @return první {@link Spoj}
+     */
+    @Query("SELECT * FROM spoj s WHERE zastavka_id = :zastavkaId AND s.odjezd =" +
+            " (SELECT MIN(odjezd) FROM spoj WHERE zastavka_id = s.zastavka_id) LIMIT 1")
+    Spoj findFirstByZastavkaId(int zastavkaId);
+
+    /**
      * Aktuální {@link Spoj}, na předané zastávce.
      *
      * @param zastavkaId ID zastávky, pro kterou aktuální spoj hledáme
@@ -53,12 +59,12 @@ public interface SpojDao {
     Spoj findAktualniByZastavkaId(int zastavkaId, long now);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertAll(List<Spoj> spoje);
+    void insertAll(Iterable<Spoj> spoje);
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
     void update(Spoj spoj);
 
     @Delete
-    void delete(Spoj... spoje);
+    void delete(Iterable<Spoj> spoje);
 
 }

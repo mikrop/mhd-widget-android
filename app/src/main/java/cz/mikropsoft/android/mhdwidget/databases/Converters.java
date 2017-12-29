@@ -9,7 +9,7 @@ public class Converters {
 
     @TypeConverter
     public static LocalTime fromTimestamp(Long value) {
-        return value == null ? null : new LocalTime(Long.valueOf(value), DateTimeZone.getDefault());
+        return value == null ? null : new LocalTime(value, DateTimeZone.getDefault());
     }
 
     @TypeConverter

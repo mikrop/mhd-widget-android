@@ -12,12 +12,14 @@ import org.junit.Assert;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import cz.mikropsoft.android.mhdwidget.JizdniRadItemView;
 import cz.mikropsoft.android.mhdwidget.JizdniRadItemView_;
 import cz.mikropsoft.android.mhdwidget.databases.MhdDatabase;
-import cz.mikropsoft.android.mhdwidget.model.JizdniRad;
+import cz.mikropsoft.android.mhdwidget.model.AktualniSpoj;
+import cz.mikropsoft.android.mhdwidget.model.SpojeZaHodinu;
 
 @EBean
 public class JizdniRadAdapter extends BaseAdapter {
@@ -27,35 +29,38 @@ public class JizdniRadAdapter extends BaseAdapter {
     @RootContext
     Context context;
 
-    List<JizdniRad> jizdniRady = new ArrayList<>();
+    List<SpojeZaHodinu> spojeZaHodinu = new ArrayList<>();
     public void setData(int zastavkaId) {
         Assert.assertNotNull(zastavkaId);
 
-        List<JizdniRad> jizdniRady = MhdDatabase.getInstance(context).spojDao()
+        AktualniSpoj aktualniSpoj = MhdDatabase.getAktualniSpoj(context, zastavkaId);
+        this.spojeZaHodinu = MhdDatabase.getInstance(context).spojDao()
                 .findByZastavkaId(zastavkaId).stream()
+                .peek(spoj -> {
+                    spoj.setAktualni(aktualniSpoj != null && Objects.equals(spoj.getOdjezd(), aktualniSpoj.getOdjezd()));
+                })
                 .collect(Collectors.groupingBy(spoj -> spoj.getOdjezd().getHourOfDay()))
                 .values().stream()
-                .map(JizdniRad::new)
+                .map(SpojeZaHodinu::new)
+                .sorted(Collections.reverseOrder())
                 .collect(Collectors.toList());
-        Collections.sort(jizdniRady, Collections.reverseOrder());
 
-        this.jizdniRady = jizdniRady;
         notifyDataSetChanged();
     }
 
     @Override
     public int getCount() {
-        return jizdniRady.size();
+        return spojeZaHodinu.size();
     }
 
     @Override
-    public JizdniRad getItem(int position) {
-        return jizdniRady.get(position);
+    public SpojeZaHodinu getItem(int position) {
+        return spojeZaHodinu.get(position);
     }
 
     @Override
     public long getItemId(int position) {
-        return jizdniRady.get(position).getHodina().getHourOfDay();
+        return spojeZaHodinu.get(position).getHodinaDne();
     }
 
     @Override
