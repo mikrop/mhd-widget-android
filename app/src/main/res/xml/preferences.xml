@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <EditTextPreference
-        android:key="@string/preference_zastavka_id_key"
-        android:title="Zobrazovaná zastávka"
-        android:inputType="text"
-        android:summary="ID zastávky"
+    <ListPreference
+        android:title="@string/pref_jizdni_rady_title"
+        android:key="preference_mesto_key"
+        android:summary="@string/pref_jizdni_rady_summary"
+        android:entries="@array/implementovanaMesta"
+        android:entryValues="@array/implementovanaMestaValues"
         android:defaultValue="1"
-        android:dialogTitle="ID zobrazované zastávky" />
-
+        />
     <Preference
         android:key="preference_about_key"
         android:persistent="false"
-        android:title="MHD Widget"
-        android:summary="@string/preference_about_summary" />
+        android:title="@string/app_name"
+        android:summary="@string/pref_about_summary"
+        />
 
 </PreferenceScreen>

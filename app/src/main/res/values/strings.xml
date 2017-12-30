@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Zastávky</string>
+    <string name="app_name">MHD zastávka</string>
     <string name="button_search">Hledat</string>
-    <string name="textview_zastavka">Zastávka</string>
     <string name="preference_label">Nastavení</string>
     <string name="jizdni_rad_label">Jízdní řád</string>
     <string name="preference_zastavka_id_key">zastavkaId</string>
+    <!--<string name="pref_zobrazovana_title">Zobrazovaná zastávka</string>-->
+    <!--<string name="pref_zobrazovana_summary">Jméno zastávky</string>-->
+    <!--<string name="pref_zobraz_dialog_title">Jméno zobrazované zastávky</string>-->
     <string name="widget_zbyva_casu">Zbývá času&#8230;</string>
     <string name="widget_predchozi">předchozí</string>
     <string name="widget_nasledujici">následující</string>
@@ -16,8 +18,12 @@
     <string name="zobrazovana_label">Zobrazovaná zastávka %1$s</string>
     <string name="empty_favorites">Žádné preferované zastávky&#8230;</string>
     <string name="empty_zastavky_list">Swipe down pro aktualizaci seznamu</string>
-    <string name="preference_about_summary">Verze %1$s</string>
+    <string name="pref_jizdni_rady_title">Jízdní řády</string>
+    <string name="pref_jizdni_rady_summary">Vyberte město ze seznamu</string>
+    <string name="pref_about_title">O aplikaci</string>
+    <string name="pref_about_summary">Verze %1$s</string>
     <string name="zastavky_empty_list">Dosud nebyl načten seznam zastávek</string>
     <string name="zastavky_aktualozovany">Seznam zastávek byl aktualizován</string>
-    <string name="jizdni_rad_stazen">Jízdní řád byl stažen</string>
+    <string name="jizdni_rad_aktualizovan">Jízdní řád byl aktualizován</string>
+    <string name="jizdni_rad_nestazen">Jízdní řád nebyl ještě stažen</string>
 </resources>

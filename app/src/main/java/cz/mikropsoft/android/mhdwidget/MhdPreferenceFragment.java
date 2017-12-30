@@ -16,7 +16,7 @@ public class MhdPreferenceFragment extends PreferenceFragment {
         getPreferenceManager().setSharedPreferencesName("MhdPreferences");
         addPreferencesFromResource(R.xml.preferences);
 
-        String preferenceAboutSummary = getResources().getString(R.string.preference_about_summary, BuildConfig.VERSION_NAME);
+        String preferenceAboutSummary = getResources().getString(R.string.pref_about_summary, BuildConfig.VERSION_NAME);
         Preference aboutPreference = findPreference("preference_about_key");
         aboutPreference.setSummary(preferenceAboutSummary);
     }

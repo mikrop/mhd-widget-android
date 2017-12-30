@@ -59,7 +59,7 @@ public class ZastavkaItemView extends LinearLayout {
                 @Override
                 public void onClick(View v) {
                     if (MhdDatabase.isSpojEmpty(getContext(), zastavkaId)) {
-                        Toast.makeText(getContext(), "Jízdní řád nebyl ještě stažen", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getContext(), R.string.jizdni_rad_nestazen, Toast.LENGTH_LONG).show();
                     } else {
                         JizdniRadActivity_.intent(getContext()).zastavkaId(zastavkaId).start();
                     }
@@ -75,7 +75,7 @@ public class ZastavkaItemView extends LinearLayout {
                 public void onClick(View v) {
 
                     if (MhdDatabase.isSpojEmpty(getContext(), zastavkaId)) {
-                        Toast.makeText(getContext(), "Jízdní řád nebyl ještě stažen", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getContext(), R.string.jizdni_rad_nestazen, Toast.LENGTH_LONG).show();
                     } else {
 
                         preferences.edit().zastavkaId()
@@ -143,7 +143,7 @@ public class ZastavkaItemView extends LinearLayout {
         progressDialog.dismiss();
 
         MhdDatabase.setFavorite(getContext(), zastavkaId, true);
-        Toast.makeText(getContext(), R.string.jizdni_rad_stazen, Toast.LENGTH_LONG).show();
+        Toast.makeText(getContext(), R.string.jizdni_rad_aktualizovan, Toast.LENGTH_LONG).show();
     }
 
 }

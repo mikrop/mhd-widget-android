@@ -136,7 +136,7 @@ public abstract class MhdDatabase extends RoomDatabase {
             return new AktualniSpoj(zastavka, spoj);
         }
 
-        Log.d(TAG, "Nepodařilo se načíst aktuální spoj ze zastávky " + zastavka.getJmeno() + " spoje nebyly dosud staženy");
+        Log.d(TAG, "Nepodařilo se načíst aktuální spoj ze zastávky " + zastavka.getJmeno() + ", jízdní řád nebyl ještě stažen");
         return null;
     }
 
