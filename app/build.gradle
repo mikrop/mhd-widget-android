@@ -8,8 +8,8 @@ android {
         applicationId "cz.mikropsoft.android.mhdwidget"
         minSdkVersion 25
         targetSdkVersion 26
-        versionCode getVersionCode()
-        versionName getVersionName()
+        versionCode rootProject.ext.versionCode
+        versionName rootProject.ext.versionName
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         javaCompileOptions {
             annotationProcessorOptions {
@@ -20,11 +20,15 @@ android {
         }
     }
     buildTypes {
-        debug{
+        debug {
+            versionNameSuffix "-SNAPSHOT"
+            buildConfigField("String", "SERVER_URL", "\"http://192.168.88.13:8080/api\"")
+//            buildConfigField("String", "SERVER_URL", "\"http://172.16.10.63:8080/api\"")
         }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            buildConfigField "String", "SERVER_URL", "\"https://mhd-widget.herokuapp.com/api\""
         }
     }
     compileOptions {
@@ -68,32 +72,4 @@ dependencies {
 //    androidTestImplementation 'com.android.support.test.espresso:espresso-web:3.0.1'
 //    androidTestImplementation 'com.android.support.test.espresso.idling:idling-concurrent:3.0.1'
 //    androidTestImplementation 'com.android.support.test.espresso:espresso-idling-resource:3.0.1'
-}
-
-def getVersionName = { ->
-    try {
-        def stdout = new ByteArrayOutputStream()
-        exec {
-            commandLine 'git', 'describe', '--dirty'
-            standardOutput = stdout
-        }
-        return stdout.toString().trim()
-    }
-    catch (ignored) {
-        return null;
-    }
-}
-
-def getVersionCode = { ->
-    try {
-        def stdout = new ByteArrayOutputStream()
-        exec {
-            commandLine 'git', 'rev-list', '--first-parent', '--count', 'origin/master'
-            standardOutput = stdout
-        }
-        return Integer.parseInt(stdout.toString().trim()) * 100
-    }
-    catch (ignored) {
-        return -1;
-    }
 }
