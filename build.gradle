@@ -25,7 +25,7 @@ project.ext {
     repo = Grgit.open(currentDir: projectDir)
 //    versionName = "1.0.0-${git.head().abbreviatedId}"
 //    versionName = git.describe()
-    versionName = '1.0.0'
+    versionName = '1.0.1'
     versionCode = repo.tag.list().size()
     versionCodeTime = repo.head().time
 }
