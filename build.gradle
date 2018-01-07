@@ -26,7 +26,7 @@ project.ext {
 //    versionName = "1.0.0-${git.head().abbreviatedId}"
 //    versionName = git.describe()
     versionName = '1.0.2'
-    versionCode = repo.tag.list().size()
+    versionCode = 3
     versionCodeTime = repo.head().time
 }
 
