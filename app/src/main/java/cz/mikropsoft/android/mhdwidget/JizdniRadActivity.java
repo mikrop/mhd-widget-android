@@ -7,6 +7,7 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
+import org.androidannotations.annotations.OptionsMenu;
 import org.androidannotations.rest.spring.annotations.RestService;
 import org.joda.time.LocalTime;
 
@@ -35,7 +36,7 @@ public class JizdniRadActivity extends ListActivity {
         setContentView(R.layout.activity_jizdni_rad);
 
         Zastavka zastavka = MhdDatabase.getInstance(this).zastavkaDao().finOne(zastavkaId);
-        this.setTitle(zastavka.getJmeno());
+        this.setTitle("(" + zastavka.getLinka() +") " + zastavka.getJmeno() + ", " + zastavka.getSmer());
 
 //        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swiperefresh);
 //        swipeRefreshLayout.setOnRefreshListener(

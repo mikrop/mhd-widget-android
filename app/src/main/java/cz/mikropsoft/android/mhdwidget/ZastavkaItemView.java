@@ -53,7 +53,7 @@ public class ZastavkaItemView extends LinearLayout {
         if (zastavka != null) {
             int zastavkaId = zastavka.getId();
 
-//            textViewLinka.setText(zastavka.getLinka());
+            textViewLinka.setText(zastavka.getLinka());
             textViewLinka.setBackgroundResource(zastavka.getProstredek().getResid());
             textViewLinka.setOnClickListener(new View.OnClickListener() {
                 @Override
